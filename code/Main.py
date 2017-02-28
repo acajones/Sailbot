@@ -31,7 +31,7 @@ info = ""
 #LOW: 225 MED: 400 HIGH: 575
 degreeInfo = "387|387|400|"
 gpsData = "|0.0|0.0"
-command = ""
+command = "7"
 
 #The main function which runs continuously, prints out information from
 #displaySensorInfo() and polls user for one of the following commands:
@@ -42,14 +42,14 @@ command = ""
 #    7,8,9 moves the main sail left, nuetral, and right respectively
  
 def main():
-    global command
+    global command 
     servo_one_sig = 387
     servo_two_sig = 387
     servo_three_sig = 400
     threading1 = threading.Thread(target=getCommand)
     threading1.start()
     mainsail_channel = 4
-    aftsail_channel = 11
+    aftsail_channel = 5
     rudder_channel = 3
     move_by = 30
 #    moveservo.main(mainsail_channel, 387)
@@ -59,8 +59,8 @@ def main():
         if not command:
             print "main: empty"
         else:
-            #print "main: " + command
-            #Commands to move servos
+            print "main: " + command
+        #Commands to move servos
 	    if command == "1" and servo_three_sig > 225:
                 servo_three_sig -= move_by
 		moveservo.main(mainsail_channel, servo_three_sig)
@@ -80,15 +80,17 @@ def main():
                 servo_two_sig += move_by
 		moveservo.main(aftsail_channel, servo_two_sig)
 	    if command == "7" and servo_one_sig > 200:
+                print("hey")
                 servo_one_sig -= move_by
 		moveservo.main(rudder_channel, servo_one_sig)
-            if command == "8" and servo_three_sig > 225:
-                servo_three_sig = 387
-                moveservo.main(rudder_channel, servo_three_sig)
+           # if command == "8" and servo_three_sig > 225:
+           #     servo_three_sig = 387
+         #       moveservo.main(rudder_channel, servo_three_sig)
 	    if command == "9" and servo_one_sig < 575:
                 servo_one_sig += move_by
-		moveservo.main(rudder_channel, servo_one_sig)
-	    command = ""
+	    moveservo.main(rudder_channel, servo_one_sig)
+	    command = "2"
+
         displaySensorInfo()
  
 #Function to continuously polls the rf for a user command

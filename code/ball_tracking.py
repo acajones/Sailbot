@@ -2,16 +2,24 @@
 # python ball_tracking.py --video ball_tracking_example.mp4
 # python ball_tracking.py
 
+import sys 
+sys.path.append('/usr/local/lib/python2.7/site-packages')
+
 # import the necessary packages
 from collections import deque
+import subprocess
 import numpy as np
 import argparse
 import imutils
 import cv2
+import time
+
+#takes video with pi camera
+subprocess.call("/home/pi/camera/video.sh", shell=True)
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-v", "--video", default="tracking_example.MTS",
+ap.add_argument("-v", "--video", default="/home/pi/camera/videoMP4.mp4",
 	help="path to the (optional) video file")
 ap.add_argument("-b", "--buffer", type=int, default=64,
 	help="max buffer size")
@@ -36,12 +44,20 @@ else:
 
 # keep looping
 while True:
+	# executes bash script to take an image and save
+	#subprocess.call("/home/pi/camera/camera.sh", shell=True)
+
+	#time.sleep(2)
+
+	#camera = cv2.VideoCapture("/home/pi/camera/image.jpg")
+
 	# grab the current frame
 	(grabbed, frame) = camera.read()
 
 	# if we are viewing a video and we did not grab a frame,
 	# then we have reached the end of the video
 	if args.get("video") and not grabbed:
+		print("breaking")
 		break
 
 	# resize the frame, blur it, and convert it to the HSV
@@ -62,7 +78,6 @@ while True:
 	cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
 		cv2.CHAIN_APPROX_SIMPLE)[-2]
 	center = None
-
 	# only proceed if at least one contour was found
 	if len(cnts) > 0:
 		# find the largest contour in the mask, then use
