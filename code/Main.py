@@ -46,8 +46,8 @@ def main():
     servo_one_sig = 387
     servo_two_sig = 387
     servo_three_sig = 400
-    threading1 = threading.Thread(target=getCommand)
-    threading1.start()
+    #threading1 = threading.Thread(target=getCommand)
+    #threading1.start()
     mainsail_channel = 4
     aftsail_channel = 5
     rudder_channel = 3
@@ -80,16 +80,15 @@ def main():
                 servo_two_sig += move_by
 		moveservo.main(aftsail_channel, servo_two_sig)
 	    if command == "7" and servo_one_sig > 200:
-                print("hey")
                 servo_one_sig -= move_by
 		moveservo.main(rudder_channel, servo_one_sig)
-           # if command == "8" and servo_three_sig > 225:
-           #     servo_three_sig = 387
-         #       moveservo.main(rudder_channel, servo_three_sig)
+        if command == "8" and servo_three_sig > 225:
+                servo_three_sig = 387
+                moveservo.main(rudder_channel, servo_three_sig)
 	    if command == "9" and servo_one_sig < 575:
                 servo_one_sig += move_by
-	    moveservo.main(rudder_channel, servo_one_sig)
-	    command = "2"
+	            moveservo.main(rudder_channel, servo_one_sig)
+	    command = "3"
 
         displaySensorInfo()
  
