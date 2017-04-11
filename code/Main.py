@@ -84,11 +84,11 @@ def main():
 		moveservo.main(rudder_channel, servo_one_sig)
         if command == "8" and servo_three_sig > 225:
                 servo_three_sig = 387
-                moveservo.main(rudder_channel, servo_three_sig)
-	    if command == "9" and servo_one_sig < 575:
+        moveservo.main(rudder_channel, servo_three_sig)
+        if command == "9" and servo_one_sig < 575:
                 servo_one_sig += move_by
-	            moveservo.main(rudder_channel, servo_one_sig)
-	    command = "3"
+        moveservo.main(rudder_channel, servo_one_sig)
+        command = "3"
 
         displaySensorInfo()
  
