@@ -31,7 +31,7 @@ info = ""
 #LOW: 225 MED: 400 HIGH: 575
 degreeInfo = "387|387|400|"
 gpsData = "|0.0|0.0"
-command = "7"
+command = ""
 
 #The main function which runs continuously, prints out information from
 #displaySensorInfo() and polls user for one of the following commands:
@@ -64,22 +64,22 @@ def main():
 	    if command == "1" and servo_three_sig > 225:
                 servo_three_sig -= move_by
 		moveservo.main(mainsail_channel, servo_three_sig)
-            if command == "2" and servo_three_sig > 225:
+        if command == "2" and servo_three_sig > 225:
                 servo_three_sig = 400
-                moveservo.main(mainsail_channel, servo_three_sig)
-	    if command == "3" and servo_three_sig < 575:
+        moveservo.main(mainsail_channel, servo_three_sig)
+        if command == "3" and servo_three_sig < 575:
                 servo_three_sig += move_by
 		moveservo.main(mainsail_channel, servo_three_sig)
-	    if command == "4" and servo_two_sig > 200:
+        if command == "4" and servo_two_sig > 200:
                 servo_two_sig -= move_by
 		moveservo.main(aftsail_channel, servo_two_sig)
-            if command == "5" and servo_three_sig > 225:
+        if command == "5" and servo_three_sig > 225:
                 servo_three_sig = 387
                 moveservo.main(aftsail_channel, servo_three_sig)
-	    if command == "6" and servo_two_sig < 575:
+        if command == "6" and servo_two_sig < 575:
                 servo_two_sig += move_by
 		moveservo.main(aftsail_channel, servo_two_sig)
-	    if command == "7" and servo_one_sig > 200:
+        if command == "7" and servo_one_sig > 200:
                 servo_one_sig -= move_by
 		moveservo.main(rudder_channel, servo_one_sig)
         if command == "8" and servo_three_sig > 225:
@@ -88,7 +88,7 @@ def main():
         if command == "9" and servo_one_sig < 575:
                 servo_one_sig += move_by
         moveservo.main(rudder_channel, servo_one_sig)
-        command = "3"
+        command = "6"
 
         displaySensorInfo()
  

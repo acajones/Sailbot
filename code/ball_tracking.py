@@ -96,7 +96,7 @@ while True:
 				(0, 255, 255), 2)
 			cv2.circle(frame, center, 5, (0, 0, 255), -1)
 		# frame size is 600, left middle and right are split into 3 zones
-		if center[0] < 200 :
+		if center[0 ] < 200 :
 			print("left")
 		if center[0] > 200 and center[0] < 400 :
 			print("straight")

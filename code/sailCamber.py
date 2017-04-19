@@ -6,10 +6,9 @@ import moveservo
 import time
 
 
-# channels for all servos
+# channels for servos
 mainsail_channel = 4
 aftsail_channel = 5
-rudder_channel = 3
 
 
 
