@@ -66,7 +66,8 @@ def main():
 			# resize the frame, blur it, and convert it to the HSV
 			# color space
 			frame = imutils.resize(frame, width=600)
-			# blurred = cv2.GaussianBlur(frame, (11, 11), 0)
+
+			blurred = cv2.GaussianBlur(frame, (11, 11), 0)
 			hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
 			# construct a mask for the color "green", then perform
@@ -125,13 +126,17 @@ def main():
 				cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
 
 			# show the frame to our screen
-			cv2.imshow("Frame", frame)
+			#cv2.imshow("Frame", frame)
 			key = cv2.waitKey(1) & 0xFF
 
 			# if the 'q' key is pressed, stop the loop
 			if key == ord("q"):
 				break
 
-# cleanup the camera and close any open windows
-camera.release()
-cv2.destroyAllWindows()
+			# cleanup the camera and close any open windows
+	camera.release()
+	cv2.destroyAllWindows()
+
+#Protects main from being run when imported and only run when executed.
+#Runs main()
+if __name__ == "__main__": main()

@@ -26,20 +26,26 @@ potentiometer_adc = 0;
 # calculates main sail angle depending on angle of wind direction sensor
 def mainSailAngle():
 	windAngle = analogTest.readadc(potentiometer_adc, SPICLK, SPIMOSI, SPIMISO, SPICS)
-	print("Wind Ange: "+windAngle)
+	print("Wind Dir: "+str(windAngle))
 
-	# converts raw wind sensor output to radians
-	rads = ((((windAngle)/920.0-50)*(2*math.pi))-((2*math.pi)/23))
+
+	angle = (0.0068*windAngle - (0.6428+(math.pi/2)))
+
+	if angle < 0:
+		angle = (2*math.pi) + angle
 
 	# equation abs(-180*sin(radians)+150) calulates main sail angle from wind angle radians
-	mainSail = abs(-180*math.sin(rads) + 150)
+	#mainSail = abs(-180*math.sin(angle) + 150)
+	mainSail = angle
 
-	moveservo.main(mainsail_channel, int(mainSail))
-	print(mainSail)
+	moveservo.main(mainsail_channel, int((mainSail*180)/math.pi))
+	print("Wind Angle: "+str((angle*180)/math.pi))
+
+	print("Mainsail Angle: "+str((mainSail*180)/math.pi))
 
 
 # first move main sail to neutral position
-moveservo.main(mainsail_channel, 400)
+moveservo.main(mainsail_channel, 360)
 time.sleep(3)
 
 while True:

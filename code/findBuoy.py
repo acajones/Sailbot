@@ -1,6 +1,6 @@
 import moveservo
 import threading
-import bt_withMain.py
+import bt_withMain
 import time
 
 thread1 = threading.Thread(target=bt_withMain.main())
@@ -14,22 +14,24 @@ coordsList = []
 directionsList = []
 
 while True:
+	print("start")
 	# used to get majority direction in a given time
 	left = 0
 	straight = 0
 	right = 0
 
 	i = 0
-	while i < 10
+	while i < 10:
 		if dirBuoy == 'left':
 			turnBoat('left')
 
-		else if dirBuoy == 'straight':
-			coordsList.append(gps())
+		if dirBuoy == 'straight':
+			coordsList.append(gps().coordinates())
+			directionsList.append(gps().direction())
 			leaveCurCoord()
 
 
-		else if dirbuoy == 'right':
+		if dirbuoy == 'right':
 			turnBoat('right')
 			
 
@@ -39,10 +41,10 @@ def turnBoat(dir):
 	if dir == 'left':
 		moveservo.main(rudder_channel, 437)
 
-	else if dir == 'right':
+	if dir == 'right':
 		moveservo.main(rudder_channel, 337)
 
-	else if dir == 'straight':
+	if dir == 'straight':
 		moveservo.main(rudder_channel, 387)
 
 
