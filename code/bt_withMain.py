@@ -99,15 +99,24 @@ def ballTrack():
 					(0, 255, 255), 2)
 				cv2.circle(frame, center, 5, (0, 0, 255), -1)
 			global dirBuoy
-			# frame size is 600, left middle and right are split into 3 zones
-			if center[0] < 200 :
-				print("left")
-				dirBuoy = "left"
-			if center[0] > 200 and center[0] < 400 :
-				print("straight")
-				dirBuoy = "straight"
-			if center[0] > 400 :
-				dirBuoy = "right"
+				if center[0] < 67:
+					dirBuoy = "1"
+				elif center[0] < 134:
+					dirBuoy = "2"
+				elif center[0] < 201:
+					dirBuoy = "3"
+				elif center[0] < 268:
+					dirBuoy = "4"
+				elif center[0] < 335:
+					dirBuoy = "5"
+				elif center[0] < 402:
+					dirBuoy = "6"
+				elif center[0] < 469:
+					dirBuoy = "7"
+				elif center[0] < 536:
+					dirBuoy = "8"
+				elif center[0] <= 600:
+					dirBuoy = "9"
 		# update the points queue
 		pts.appendleft(center)
 
