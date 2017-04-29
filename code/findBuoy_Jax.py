@@ -82,36 +82,7 @@ def main():
 			makeVecor(iteration)
 			iteration++
 
-			# once at least 2 vectors have been made, find the intersection
-			if iteration >= 1:
-				# gets all endpoints from lists and calls seg_intersect with those points
-				a1 = array([ coordsList[iteration*2-2], coordsList[iteration*2-1] ])
-				a2 = array([ endCoords[iteration*2-2], endCoords[iteration*2-1] ])
-				b1 = array([ coordsList[iteration*2], coordsList[iteration*2+1] ])
-				b2 = array([ endCoords[iteration*2], endCoords[iteration*2+1] ])
-				print(seg_intersect(a1,a2,b1,b2))
-
 			leaveCurCoord(lat, lon)
-
-# http://stackoverflow.com/questions/3252194/numpy-and-line-intersections
-# line segment a given by endpoints a1, a2
-# line segment b given by endpoints b1, b2
-# return 
-def seg_intersect(a1,a2, b1,b2) :
-    da = a2-a1
-    db = b2-b1
-    dp = a1-b1
-    dap = perp(da)
-    denom = dot( dap, db)
-    num = dot( dap, dp )
-    return (num / denom.astype(float))*db + b1
-
-# helper method for seg_intersect
-def perp( a ) :
-    b = empty_like(a)
-    b[0] = -a[1]
-    b[1] = a[0]
-    return b
 
 # turns rudder 45 degrees left or right to turn
 # or moves rudder to center to go straight
@@ -125,7 +96,6 @@ def turnBoat(dir):
 	if dir == 'straight':
 		moveservo.main(rudder_channel, 387)
 
-# gets lat and long points 100 meters away in a specified direction for the current iteration
 def makeVector(iteration):
 	lat = coordsList[iteration] + math.cos(directionsList[iteration]*3.14/180) * 100
 	lon = coordsList[iteration + 1] + math.sin(directionsList[iteration]*3.14/180) * 100
