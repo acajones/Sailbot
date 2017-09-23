@@ -95,12 +95,10 @@ def main():
 #args: 
 #    p = port for for communication
 def getCommand():
-    port = serial.Serial("/dev/ttyS0", baudrate=57600, timeout=0.5)
     global command
     while True:
         time.sleep(0.5)
-        data = port.readline().decode()
-        command = data
+        command = raw_input("Give command: ")
         print "thread command: " + command
 
 #Function to retrieve data from gps
