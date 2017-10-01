@@ -97,9 +97,10 @@ def main():
 def getCommand():
     global command
     while True:
-        time.sleep(0.5)
         command = raw_input("Give command: ")
         print "thread command: " + command
+        time.sleep(0.5)
+        command = 0
 
 #Function to retrieve data from gps
 def gps():
