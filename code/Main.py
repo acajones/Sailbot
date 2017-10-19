@@ -98,9 +98,9 @@ def getCommand():
     port = serial.Serial("/dev/ttyS0", baudrate=57600, timeout=0.5)
     global command
     while True:
-        time.sleep(0.5)
         data = port.readline().decode()
         command = data
+        time.sleep(0.25)
         print "thread command: " + command
 
 #Function to retrieve data from gps

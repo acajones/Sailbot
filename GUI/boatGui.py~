@@ -1,0 +1,32 @@
+import pygame, math, sys 
+
+from pygame.locals import *
+
+screen = pygame.display.set_mode((1024,768))
+clock = pygame.time.Clock()
+BLUE = (50,50,235)
+
+class BoatSprite(pygame.sprite.Sprite):
+
+    def __init__(self, image, position):
+        pygame.sprite.Sprite.__init__(self)
+        self.src_image = pygame.image.load(image)
+        self.position = position
+        self.rect = self.src_image.get_rect();
+
+    def update(self, direction):
+        self.image = pygame.transform.rotate(self.src_image, direction)
+
+rect = screen.get_rect()
+boat = BoatSprite('../../../Downloads/boat.png', rect.center)
+render_boat = pygame.sprite.RenderPlain(boat)
+while 1:
+    # this section gets the user input
+    clock.tick(30)
+    for event in pygame.event.get():
+        continue
+
+    screen.fill(BLUE)
+    render_boat.update(0)
+    render_boat.draw(screen)
+    pygame.display.flip()

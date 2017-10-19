@@ -1,0 +1,3 @@
+import pygame
+
+screen = pygame.display.setmode((1024,768))
