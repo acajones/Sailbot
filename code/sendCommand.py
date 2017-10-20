@@ -3,7 +3,7 @@ import threading
 import time
 import datetime
 
-port = serial.Serial("/dev/ttyUSB2", baudrate=57600, timeout=0.5)
+port = serial.Serial("/dev/ttyUSB0", baudrate=57600, timeout=0.5)
 command = ""
 check = ""
 

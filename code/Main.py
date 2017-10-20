@@ -61,12 +61,12 @@ def main():
         else:
             print "main: " + command
         #Commands to move servos
-	    if command == "1" and servo_three_sig > 225:
+	if command == "1" and servo_three_sig > 225:
                 servo_three_sig -= move_by
 		moveservo.main(mainsail_channel, servo_three_sig)
         if command == "2" and servo_three_sig > 225:
                 servo_three_sig = 400
-        moveservo.main(mainsail_channel, servo_three_sig)
+                moveservo.main(mainsail_channel, servo_three_sig)
         if command == "3" and servo_three_sig < 575:
                 servo_three_sig += move_by
 		moveservo.main(mainsail_channel, servo_three_sig)
