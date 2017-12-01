@@ -29,8 +29,9 @@ def readPIInput():
     data = ""
     global port
     while True:
-        #data = datetime.datetime.now().strftime("%Y-%m-%d|%H:%M:%S") + "|" + str(servo1) + "|" + str(servo2) + "|" + str(servo3) + "|" + str(windspeed) + "|" + str(winddirection) + "|" + str(0.0) + "|" + str(0.0) + " $"
+       # data = datetime.datetime.now().strftime("%Y-%m-%d|%H:%M:%S") + "|" + str(servo1) + "|" + str(servo2) + "|" + str(servo3) + "|" + str(windspeed) + "|" + str(winddirection) + "|" + str(0.0) + "|" + str(0.0) + " $"
        # data = port.readline().decode()
+        data =  datetime.datetime.now().strftime("%Y-%m-%d|%H:%M:%S") + "|400|400|400|30|20|" + str(0.0) + "|" + str(0.0) + " $"
         print data
         target = open("data.txt", 'w')
         target.write(data)
