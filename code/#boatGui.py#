@@ -95,8 +95,8 @@ def main():
     mainsail_angle = 360
     aftsail_angle = 360
     aftsail_coords = (800,200)
-    #threading1 = threading.Thread(target=sendCommand.readPIInput)
-    #threading1.start()
+    threading1 = threading.Thread(target=sendCommand.readPIInput)
+    threading1.start()
     while 1:
         # this section gets the user input
         clock.tick(30)
@@ -135,7 +135,6 @@ def main():
                 aftsail_angle = aftsail_angle + 1
                 sendCommand.sendCommand('4')
             elif event.key == K_ESCAPE:
-                return
                 sys.exit(0)
 
             screen.fill(BLUE)
