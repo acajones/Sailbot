@@ -1,0 +1,29 @@
+#import gps
+#import Adafruit_LSM303
+import math
+
+def main():
+    heading =  getHeading(583838, 583838, 30412, 30450)
+    turnBoat(heading)
+
+
+def getHeading(lat1, lat2, long1, long2):
+    dy = lat2 - lat1 
+    dx = math.cos(math.pi/180*lat1)*(long2-long1)
+    angle = math.atan2(dy,dx)
+    return 180/math.pi*angle
+
+def turnBoat(heading):
+    moveservo.main(rudder_channel, 437) #left 45 deg
+    moveservo.main(rudder_channel, 337) #right 45 deg
+    moveservo.main(rudder_channel, 387) #straight
+
+
+#Protects main from being run when imported and only run when executed.
+#Runs main()
+if __name__ == '__main__':
+    try:
+        main()
+    except KeyboardInterrupt:
+        exitapp = True
+        raise
