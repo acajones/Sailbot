@@ -30,7 +30,7 @@ print args
 # ball in the HSV color space, then initialize the
 # list of tracked points
 redLower = (169, 100, 100)
-redUpper = (189, 255, 255)
+redUpper = (240, 255, 255)
 pts = deque(maxlen=args["buffer"])
 
 # if a video path was not supplied, grab the reference
@@ -116,7 +116,9 @@ while True:
 		cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
 
 	# show the frame to our screen
-	cv2.imshow("Frame", frame)
+	#cv2.imshow("Frame", frame)
+	# save frame 
+	cv2.imwrite("frame.jpg",frame)
 	key = cv2.waitKey(1) & 0xFF
 
 	# if the 'q' key is pressed, stop the loop

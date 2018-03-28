@@ -3,19 +3,22 @@ sys.path.append('/usr/local/lib/python2.7/site-packages')
 
 # import the necessary packages
 from collections import deque
+from array import array
+from numpy import *
 import subprocess
-import numpy as np
 import argparse
 import imutils
 import cv2
 import time
-import moveservo
+import math
+#import moveservo
 import threading
-import bt_withMain
-import time
-import gpsdshm
+#import bt_withMain
+#import gpsdshm
+import CompassDefault
+import goCoord
 
-gpsd_shm = gpsdshm.Shm()
+#gpsd_shm = gpsdshm.Shm()
 dirBuoy = "none"
 rudder_channel = 3
 exitapp = False
@@ -28,70 +31,77 @@ directionsList = []
 iteration = 0
 
 def main():
+	iteration = 0
 	thread1 = threading.Thread(target=ballTrack)
 	thread1.start()
 	while True:
 		global dirBuoy
-		print(dirBuoy)
+		time.sleep(1)
+		print "Direction: ",dirBuoy
 		# used to get majority direction in a given time
 		left = 0
 		straight = 0
 		right = 0
 		
 		#Converts lat and long degrees to meters from equator and prime meridian respectively
-		lat=gpsd_shm.fix.latitude*111*1000 #Latitude in meters from equator
-		lon=gpsd_shm.fix.longitude*Math.cos(gpsd_shm.fix.latitude*3.14/180)*111*1000
+		#lat=gpsd_shm.fix.latitude*111*1000 #Latitude in meters from equator
+		#lon=gpsd_shm.fix.longitude*Math.cos(gpsd_shm.fix.latitude*3.14/180)*111*1000
+		lat = 100.0
+		lon = 150.0
 
 		# if the buoy is seen record the boats position
-		if dirBuoy !=  'none'
+		if dirBuoy !=  'none':
 			coordsList.append(lat)
 			coordsList.append(lon)
+			iteration = iteration + 1
 
 			# then record the direction that the buoy is from the boat
 			if dirBuoy == 1:
-				directionsList.append(gpsd_shm.fix.track - 75)
+				directionsList.append(CompassDefault.getBearing() - 75)
 				
 			elif dirBuoy == 2:
-				directionsList.append(gpsd_shm.fix.track - 56)	
+				directionsList.append(CompassDefault.getBearing() - 56)	
 
 			elif dirBuoy == 3:
-				directionsList.append(gpsd_shm.fix.track - 37)
+				directionsList.append(CompassDefault.getBearing() - 37)
 
 			elif dirBuoy == 4:
-				directionsList.append(gpsd_shm.fix.track - 19)
+				directionsList.append(CompassDefault.getBearing() - 19)
 
 			elif dirBuoy == 5:
-				directionsList.append(gpsd_shm.fix.track)
+				directionsList.append(CompassDefault.getBearing())
 
 			elif dirBuoy == 6:
-				directionsList.append(gpsd_shm.fix.track + 19)
+				directionsList.append(CompassDefault.getBearing() + 19)
 
 			elif dirBuoy == 7:
-				directionsList.append(gpsd_shm.fix.track + 38)
+				directionsList.append(CompassDefault.getBearing() + 38)
 
 			elif dirBuoy == 8:
-				directionsList.append(gpsd_shm.fix.track + 56)
+				directionsList.append(CompassDefault.getBearing() + 56)
 
 			elif dirBuoy == 9:
-				directionsList.append(gpsd_shm.fix.track + 75)
-
-			else:
-				# search for buoy
-				findBuoy();
+				directionsList.append(CompassDefault.getBearing() + 75)
 			
-			makeVecor(iteration)
-			iteration++
+			makeVector(iteration)
+			print 'Iteration: ',iteration
 
 			# once at least 2 vectors have been made, find the intersection
-			if iteration >= 1:
+			if iteration > 1:
 				# gets all endpoints from lists and calls seg_intersect with those points
-				a1 = array([ coordsList[iteration*2-2], coordsList[iteration*2-1] ])
-				a2 = array([ endCoords[iteration*2-2], endCoords[iteration*2-1] ])
-				b1 = array([ coordsList[iteration*2], coordsList[iteration*2+1] ])
-				b2 = array([ endCoords[iteration*2], endCoords[iteration*2+1] ])
+				#print coordsList
+				#print endCoords
+				a1 = array([ coordsList[0], coordsList[1] ])
+				a2 = array([ endCoords[0], endCoords[1] ])
+				b1 = array([ coordsList[2], coordsList[3] ])
+				b2 = array([ endCoords[2], endCoords[3] ])
 				print(seg_intersect(a1,a2,b1,b2))
 
 			leaveCurCoord(lat, lon)
+
+		else:
+			# search for buoy
+			findBuoy();
 
 # http://stackoverflow.com/questions/3252194/numpy-and-line-intersections
 # line segment a given by endpoints a1, a2
@@ -104,7 +114,8 @@ def seg_intersect(a1,a2, b1,b2) :
     dap = perp(da)
     denom = dot( dap, db)
     num = dot( dap, dp )
-    return (num / denom.astype(float))*db + b1
+    print num, denom, db, b1
+    return (num / float(denom))*db + b1
 
 # helper method for seg_intersect
 def perp( a ) :
@@ -117,13 +128,16 @@ def perp( a ) :
 # or moves rudder to center to go straight
 def turnBoat(dir):
 	if dir == 'left':
-		moveservo.main(rudder_channel, 437)
+		#moveservo.main(rudder_channel, 437)
+		print 'left'
 
 	if dir == 'right':
-		moveservo.main(rudder_channel, 337)
+		#moveservo.main(rudder_channel, 337)
+		print 'right'
 
 	if dir == 'straight':
-		moveservo.main(rudder_channel, 387)
+		#moveservo.main(rudder_channel, 387)
+		print 'straight'
 
 # gets lat and long points 100 meters away in a specified direction for the current iteration
 def makeVector(iteration):
@@ -140,20 +154,16 @@ def leaveCurCoord(lat, lon):
 	turnBoat('straight')
 
 	newLat = lat*111*1000 #Latitude in meters from equator
-	newLon = lon*Math.cos(gpsd_shm.fix.latitude*3.14/180)*111*1000
+	#newLon = lon*Math.cos(gpsd_shm.fix.latitude*3.14/180)*111*1000
+	newLon = lon + 100
 
 	while abs(newLat - lat) < 4 and abs(newLon - lon) < 4:
-		newLat = gpsd_shm.fix.latitude*111*1000
-		newLon = gpsd_shm.fix.longitude*Math.cos(gpsd_shm.fix.latitude*3.14/180)*111*1000
+		#newLat = gpsd_shm.fix.latitude*111*1000
+		#newLon = gpsd_shm.fix.longitude*Math.cos(gpsd_shm.fix.latitude*3.14/180)*111*1000
+		newLat = 1
+		newLon = 1
 
 
-# function to retrieve data from gps
-def gps():
-    try:
-        gpsData = gpsInfo.main()
-    except:
-        print "gps signal error"
-    return gpsData
 
 # when buoy is not in view, search area for buoy
 def findBuoy():
@@ -162,12 +172,6 @@ def findBuoy():
 	while not found:
 		print("searching")
 		found = True
-
-# based on the boats current position and a given destination
-# the boat will navigate to the given coord
-def goCoord():
-	print("go")
-
 
 # tracks ball shaped object in recorded video
 def ballTrack():
@@ -257,23 +261,23 @@ def ballTrack():
 				global dirBuoy
 				# frame size is 600, left middle and right are split into 3 zones
 				if center[0] < 67:
-					dirBuoy = "1"
+					dirBuoy = 1
 				elif center[0] < 134:
-					dirBuoy = "2"
+					dirBuoy = 2
 				elif center[0] < 201:
-					dirBuoy = "3"
+					dirBuoy = 3
 				elif center[0] < 268:
-					dirBuoy = "4"
+					dirBuoy = 4
 				elif center[0] < 335:
-					dirBuoy = "5"
+					dirBuoy = 5
 				elif center[0] < 402:
-					dirBuoy = "6"
+					dirBuoy = 6
 				elif center[0] < 469:
-					dirBuoy = "7"
+					dirBuoy = 7
 				elif center[0] < 536:
-					dirBuoy = "8"
+					dirBuoy = 8
 				elif center[0] <= 600:
-					dirBuoy = "9"
+					dirBuoy = 9
 				else:
 					dirBuoy = "none"
 			# update the points queue
@@ -286,7 +290,7 @@ def ballTrack():
 
 				# otherwise, compute the thickness of the line and
 				# draw the connecting lines
-				thickness = int(np.sqrt(args["buffer"] / float(i + 1)) * 2.5)
+				thickness = int(sqrt(args["buffer"] / float(i + 1)) * 2.5)
 				cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
 
 			# show the frame to our screen
