@@ -157,6 +157,20 @@ def rfSend(str):
     time.sleep(0.25)
     port.write(str + '\r' + '\n')
     print str
+def buoyCalculation():
+    lat = gps.latitude
+    lon = gps.longitude
+    angle = CompassDefault.getBearing();
+    distRadians = 200 / (6372797.6)
+    lat1 = lat * math.pi / 180
+    lon1 = lon * math.pi / 180
+    lat2 = math.asin(math.sin(lat1) * math.cos(distRadians) + math.cos(lat1) * math.sin(distRadians) * math.cos(angle))
+    lon2 = lon1 + math.atan2(math.sin(angle) * math.sin(distRadians) * math.cos(lat1),
+                             math.cos(distRadians) - math.sin(lat1) * math.sin(lat2))
+
+    lat = lat2 * 180 / math.pi
+    lon = lon2 * 180 / math.pi
+    return lat, lon;
 
 #Protects main from being run when imported and only run when executed.
 #Runs main()
