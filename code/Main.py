@@ -157,6 +157,7 @@ def rfSend(str):
     time.sleep(0.25)
     port.write(str + '\r' + '\n')
     print str
+    
 def buoyCalculation():
     lat = gps.latitude
     lon = gps.longitude

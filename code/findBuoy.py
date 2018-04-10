@@ -11,26 +11,30 @@ import imutils
 import cv2
 import time
 import math
-#import moveservo
+import moveservo
 import threading
 #import bt_withMain
-#import gpsdshm
+import gpsdshm
 import CompassDefault
 import goCoord
 
-#gpsd_shm = gpsdshm.Shm()
+gpsd_shm = gpsdshm.Shm()
 dirBuoy = "none"
 rudder_channel = 3
 exitapp = False
+x_orig = 0
+y_orig = 0
 
 # records coordinates of boat and direction of buoy
 # from the boat
-coordsList = []
+coordsList = [
+]
 endCoords = [] # coordinates of the end of each vector
 directionsList = []
 iteration = 0
 
 def main():
+	stay(90)
 	iteration = 0
 	thread1 = threading.Thread(target=ballTrack)
 	thread1.start()
@@ -51,8 +55,8 @@ def main():
 
 		# if the buoy is seen record the boats position
 		if dirBuoy !=  'none':
-			coordsList.append(lat)
-			coordsList.append(lon)
+			#coordsList.append(lat)
+			#coordsList.append(lon)
 			iteration = iteration + 1
 
 			# then record the direction that the buoy is from the boat
@@ -83,8 +87,8 @@ def main():
 			elif dirBuoy == 9:
 				directionsList.append(CompassDefault.getBearing() + 75)
 			
-			makeVector(iteration)
 			print 'Iteration: ',iteration
+			makeVector(iteration)
 
 			# once at least 2 vectors have been made, find the intersection
 			if iteration > 1:
@@ -95,7 +99,7 @@ def main():
 				a2 = array([ endCoords[0], endCoords[1] ])
 				b1 = array([ coordsList[2], coordsList[3] ])
 				b2 = array([ endCoords[2], endCoords[3] ])
-				print(seg_intersect(a1,a2,b1,b2))
+				print 'Intersection at: ',seg_intersect(a1,a2,b1,b2)
 
 			leaveCurCoord(lat, lon)
 
@@ -129,20 +133,20 @@ def perp( a ) :
 def turnBoat(dir):
 	if dir == 'left':
 		#moveservo.main(rudder_channel, 437)
-		print 'left'
+		print 'rudder left'
 
 	if dir == 'right':
 		#moveservo.main(rudder_channel, 337)
-		print 'right'
+		print 'rudder right'
 
 	if dir == 'straight':
 		#moveservo.main(rudder_channel, 387)
-		print 'straight'
+		print 'rudder straight'
 
 # gets lat and long points 100 meters away in a specified direction for the current iteration
 def makeVector(iteration):
-	lat = coordsList[iteration] + math.cos(directionsList[iteration]*3.14/180) * 100
-	lon = coordsList[iteration + 1] + math.sin(directionsList[iteration]*3.14/180) * 100
+	lat = coordsList[iteration-1] + math.cos(directionsList[iteration-1]*3.14/180) * 100
+	lon = coordsList[iteration] + math.sin(directionsList[iteration-1]*3.14/180) * 100
 	endCoords.append(lat)
 	endCoords.append(lon)
 
@@ -172,6 +176,26 @@ def findBuoy():
 	while not found:
 		print("searching")
 		found = True
+
+# calculates how far the boat is from its origin and sends warning if distance is >= max
+def stay(max):
+    x_coord = gpsd_shm.fix.latitude
+    y_coord = gpsd_shm.fix.longitude
+    print x_coord
+    distance = ((x_coord - x_orig)**2 + (y_coord - y_orig)**2)**0.5
+    if distance >= max:
+        print "turn around!"
+    else:
+        print "all good"
+        
+def search():
+    t = 0
+
+    while(not_found && all_good)
+        x_coord = x_orig + t*math.cos(t)
+        y_coord = y_orig + t*math.sin(t)
+        //sail to (x_coord, y_coord)
+        t++
 
 # tracks ball shaped object in recorded video
 def ballTrack():
@@ -295,6 +319,7 @@ def ballTrack():
 
 			# show the frame to our screen
 			#cv2.imshow("Frame", frame)
+			cv2.imwrite("frame.jpg",frame)
 			key = cv2.waitKey(1) & 0xFF
 
 			# if the 'q' key is pressed, stop the loop
